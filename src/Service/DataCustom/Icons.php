@@ -37,7 +37,7 @@ class Icons extends ManualHelper
     
     public static function setClassJobIcon($content)
     {
-        $filename = str_ireplace(' ', null, strtolower($content->Name_en));
+        $filename = str_ireplace(' ', null, strtolower($content->Name_chs));
         $content->Icon = "/cj/1/{$filename}.png";
     }
     
@@ -67,13 +67,13 @@ class Icons extends ManualHelper
     
     public static function setMapFilename($content)
     {
-        if (!isset($content->Id_en)) {
+        if (!isset($content->Id_chs)) {
             return;
         }
         
         $content->MapFilename = null;
-        $content->MapFilenameId = $content->Id_en;
-        unset($content->Id_en);
+        $content->MapFilenameId = $content->Id_chs;
+        unset($content->Id_chs);
     
         if (!empty($content->MapFilenameId)) {
             [$folder, $layer] = explode('/', $content->MapFilenameId);

@@ -25,6 +25,8 @@ class Quest extends ManualHelper
                 Redis::Cache()->get("xiv_ENpcResident_{$id}")
             );
             
+            var_dump($npc);
+
             $name = preg_replace('/[0-9]+/', null, str_ireplace(' ', null, strtolower($npc->Name_en)));
             
             if (isset($this->ENpcResidentToName[$name])) {

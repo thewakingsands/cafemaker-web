@@ -34,18 +34,14 @@ class FileReader extends DataHelper
         $filenameList = new \stdClass();
 
         // build a list of multi-language filenames
-        foreach(['en','de','fr','ja'] as $language) {
+        foreach(['en','de','fr','ja','chs'] as $language) {
             $filenameList->{$language} = sprintf($filenameStructure, $filename, $language);
         }
 
         // parse main csv file
-        [$columns, $types, $data] = self::parseCsvFile($filenameList->en);
+        [$columns, $types, $data] = self::parseCsvFile($filenameList->chs);
 
-        // append on: German, French and Japanese
-        foreach(['de', 'fr', 'ja'] as $language) {
-            $langFilename = $filenameList->{$language};
-            $data = self::parseLanguageCsvFile($language, $langFilename, $data, $columns, $types);
-        }
+        // removed other languages
 
         return $data;
     }
@@ -118,7 +114,7 @@ class FileReader extends DataHelper
                     // convert icon
                     $value = DataHelper::getImagePath($value);
                 } else if ($types[$offset] == 'str') {
-                    $columnName = "{$columnName}_en";
+                    $columnName = "{$columnName}_chs";
                     
                     // fix new lines (broke around 30th May 2018)
                     $value = str_ireplace("\r", "\n", $value);

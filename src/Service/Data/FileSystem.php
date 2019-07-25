@@ -32,7 +32,7 @@ class FileSystem extends DataHelper
             }
 
             // generalize language
-            $file = str_ireplace(['.de','.en','.fr','.ja'], '.[lang]', $file);
+            $file = str_ireplace(['.de','.en','.fr','.ja','.chs'], '.[lang]', $file);
 
             // if no .en it is a basic file with no text
             if (stripos($file, '.[lang]') === false) {
