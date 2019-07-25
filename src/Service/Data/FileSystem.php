@@ -83,6 +83,10 @@ class FileSystem extends DataHelper
             die('empty ??? ');
         }
 
+        if (!file_exists($filename)) {
+            throw new Exception("File $filename is not exists.");
+        }
+
         $data = file_get_contents($filename);
 
         if ($data) {

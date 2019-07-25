@@ -136,7 +136,12 @@ class SaintCoinachRedisCommand extends Command
             $this->maxDepth = $contentName == 'ENpcBase' ? 1 : self::MAX_DEPTH;
             
             // load all content for that schema
-            $allContentData = FileSystem::load($contentName, 'json');
+            try {
+                $allContentData = FileSystem::load($contentName, 'json');
+            } catch (Exception $e) {
+                $this->io->text("Sheet: {$count}/{$total}    <info>SKIPPED {$contentName} file load failed</info>");
+                continue;
+            }
 
             // build content (this saves it)
             $section = (new ConsoleOutput())->section();
