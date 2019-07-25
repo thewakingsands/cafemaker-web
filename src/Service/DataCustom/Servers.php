@@ -18,7 +18,7 @@ class Servers extends ManualHelper
             $key = "xiv_World_{$id}";
             $world = Redis::Cache()->get($key);
     
-            $world->InGame = in_array($world->Name_en, GameServers::LIST);
+            $world->InGame = in_array($world->Name_chs, GameServers::LIST);
         
             // save
             Redis::Cache()->set($key, $world, self::REDIS_DURATION);

@@ -22,7 +22,7 @@ class TripleTriadCardDescriptions extends ManualHelper
             $key = "xiv_TripleTriadCard_{$id}";
             $object = Redis::Cache()->get($key);
             
-            if (empty($object->Description_en)) {
+            if (empty($object->Description_chs)) {
                 continue;
             }
     

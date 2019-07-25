@@ -15,21 +15,21 @@ class Characters extends ManualHelper
     public function handle()
     {
         // populate game data
-        $this->populate('Companion', 'Name_en');
-        $this->populate('Mount', 'Name_en');
-        $this->populate('Race', 'Name_en', 'NameFemale_en');
-        $this->populate('Tribe', 'Name_en', 'NameFemale_en');
-        $this->populate('Title', 'Name_en', 'NameFemale_en');
-        $this->populate('GrandCompany', 'Name_en');
-        $this->populate('GuardianDeity', 'Name_en');
-        $this->populate('Town', 'Name_en');
-        $this->populate('BaseParam', 'Name_en');
-        $this->populate('GCRankGridaniaFemaleText', 'Name_en');
-        $this->populate('GCRankGridaniaMaleText', 'Name_en');
-        $this->populate('GCRankLimsaFemaleText', 'Name_en');
-        $this->populate('GCRankLimsaMaleText', 'Name_en');
-        $this->populate('GCRankUldahFemaleText', 'Name_en');
-        $this->populate('GCRankUldahMaleText', 'Name_en');
+        $this->populate('Companion', 'Name_chs');
+        $this->populate('Mount', 'Name_chs');
+        $this->populate('Race', 'Name_chs', 'NameFemale_chs');
+        $this->populate('Tribe', 'Name_chs', 'NameFemale_chs');
+        $this->populate('Title', 'Name_chs', 'NameFemale_chs');
+        $this->populate('GrandCompany', 'Name_chs');
+        $this->populate('GuardianDeity', 'Name_chs');
+        $this->populate('Town', 'Name_chs');
+        $this->populate('BaseParam', 'Name_chs');
+        $this->populate('GCRankGridaniaFemaleText', 'Name_chs');
+        $this->populate('GCRankGridaniaMaleText', 'Name_chs');
+        $this->populate('GCRankLimsaFemaleText', 'Name_chs');
+        $this->populate('GCRankLimsaMaleText', 'Name_chs');
+        $this->populate('GCRankUldahFemaleText', 'Name_chs');
+        $this->populate('GCRankUldahMaleText', 'Name_chs');
     
         // special ones
         $this->populateParamGrow();
@@ -105,7 +105,7 @@ class Characters extends ManualHelper
             
             // if it's a material item
             if (isset($content->ItemUICategory->ID) && $content->ItemUICategory->ID == 58) {
-                $hash = ContentHash::hash($content->Name_en);
+                $hash = ContentHash::hash($content->Name_chs);
                 $data[$hash] = $content->ID;
             }
         }
@@ -127,7 +127,7 @@ class Characters extends ManualHelper
     
             // only stuff that has a class/job category
             if (isset($content->ClassJobCategory->ID)) {
-                $hash = ContentHash::hash($content->Name_en);
+                $hash = ContentHash::hash($content->Name_chs);
                 $data[$hash] = $content->ID;
             }
         }
@@ -149,7 +149,7 @@ class Characters extends ManualHelper
             
             // if it's a material item
             if (isset($content->ItemUICategory->ID) && $content->ItemUICategory->ID == 55) {
-                $hash = ContentHash::hash($content->Name_en);
+                $hash = ContentHash::hash($content->Name_chs);
                 $data[$hash] = $content->ID;
             }
         }
