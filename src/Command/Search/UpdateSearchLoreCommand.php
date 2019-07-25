@@ -125,7 +125,7 @@ class UpdateSearchLoreCommand extends Command
             'Text_de'   => $text['de'],
             'Text_fr'   => $text['fr'],
             'Text_ja'   => $text['ja'],
-            'Text_cn'   => null,
+            'Text_chs'   => null,
             'Text_kr'   => null,
             'Context'   => $context,
             'Source'    => $source[0],
@@ -195,7 +195,7 @@ class UpdateSearchLoreCommand extends Command
                 'Name_fr'     => $object->Name_fr ?? null,
                 'Name_ja'     => $object->Name_ja ?? null,
                 'Name_kr'     => $object->Name_kr ?? null,
-                'Name_cn'     => $object->Name_cn ?? null,
+                'Name_chs'     => $object->Name_chs ?? null,
                 'Icon'        => $object->Icon ?? null,
                 'Url'         => $object->Url ?? null,
             ];

@@ -169,7 +169,7 @@ class UpdateSearchCommand extends Command
                     $content["TextData_fr"],
                     $content["TextData_ja"],
                     $content["TextData_kr"],
-                    $content["TextData_cn"],
+                    $content["TextData_chs"],
 
                     $content["Level{$num}"],
                     $content["Level{$num}Target"],

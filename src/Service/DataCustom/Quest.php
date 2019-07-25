@@ -79,7 +79,7 @@ class Quest extends ManualHelper
         $quest->TextData_de  = null;
         $quest->TextData_fr  = null;
         $quest->TextData_ja  = null;
-        $quest->TextData_cn  = null;
+        $quest->TextData_chs  = null;
         $quest->TextData_kr  = null;
     
         // loop through languages

@@ -97,7 +97,7 @@ class Patch
             'Name_en'       => $name,
             'Name_fr'       => $name,
             'Name_de'       => $name,
-            'Name_cn'       => $name,
+            'Name_chs'       => $name,
             'Name_kr'       => $name,
             'ReleaseDate'   => time(),
             'Version'       => $version,
