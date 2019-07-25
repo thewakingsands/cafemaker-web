@@ -84,7 +84,7 @@ class FileSystem extends DataHelper
         }
 
         if (!file_exists($filename)) {
-            throw new Exception("File $filename is not exists.");
+            throw new \Exception("File $filename is not exists.");
         }
 
         $data = file_get_contents($filename);

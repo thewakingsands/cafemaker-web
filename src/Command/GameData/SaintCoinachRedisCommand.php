@@ -138,8 +138,8 @@ class SaintCoinachRedisCommand extends Command
             // load all content for that schema
             try {
                 $allContentData = FileSystem::load($contentName, 'json');
-            } catch (Exception $e) {
-                $this->io->text("Sheet: {$count}/{$total}    <info>SKIPPED {$contentName} file load failed</info>");
+            } catch (\Exception $e) {
+                echo "SKIPPED {$contentName}: file load failed\n";
                 continue;
             }
 
