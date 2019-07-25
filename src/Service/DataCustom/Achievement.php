@@ -145,7 +145,8 @@ class Achievement extends ManualHelper
                     $quest->TextData_en,
                     $quest->TextData_de,
                     $quest->TextData_fr,
-                    $quest->TextData_ja
+                    $quest->TextData_ja,
+                    $quest->TextData_chs
                 );
     
                 if (is_object($quest)) {

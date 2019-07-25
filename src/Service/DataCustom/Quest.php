@@ -24,8 +24,6 @@ class Quest extends ManualHelper
             $npc  = Arrays::minification(
                 Redis::Cache()->get("xiv_ENpcResident_{$id}")
             );
-            
-            var_dump($npc);
 
             $name = preg_replace('/[0-9]+/', null, str_ireplace(' ', null, strtolower($npc->Name_en)));
             
@@ -36,10 +34,11 @@ class Quest extends ManualHelper
             $this->ENpcResidentToName[$name] = $id;
             $this->ENpcResidentToData[$id]   = [
                 $npc->ID,
-                $npc->Name_en,
-                $npc->Name_ja,
-                $npc->Name_de,
-                $npc->Name_fr
+                isset($npc->Name_en) ? $npc->Name_en : NULL,
+                isset($npc->Name_ja) ? $npc->Name_ja : NULL,
+                isset($npc->Name_de) ? $npc->Name_de : NULL,
+                isset($npc->Name_fr) ? $npc->Name_fr : NULL,
+                isset($npc->Name_chs) ? $npc->Name_chs : NULL
             ];
         }
         
@@ -70,13 +69,13 @@ class Quest extends ManualHelper
      */
     private function addQuestText($quest)
     {
-        if (strlen($quest->TextFile_en) < 2) {
+        if (strlen($quest->TextFile_chs) < 2) {
             return;
         }
         
         // grab folder
-        $folder = substr(explode('_', $quest->TextFile_en)[1], 0, 3);
-        $quest->TextFilename = "quest/{$folder}/{$quest->TextFile_en}.[lang].csv";
+        $folder = substr(explode('_', $quest->TextFile_chs)[1], 0, 3);
+        $quest->TextFilename = "quest/{$folder}/{$quest->TextFile_chs}.[lang].csv";
         $quest->TextData_en  = null;
         $quest->TextData_de  = null;
         $quest->TextData_fr  = null;

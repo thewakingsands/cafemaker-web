@@ -33,7 +33,7 @@ class PreHandler
             foreach ($contentData as $content) {
                 $class::{$function}($content);
             }
-     
+
             FileSystem::save($contentName, 'json', $contentData);
         }
     }

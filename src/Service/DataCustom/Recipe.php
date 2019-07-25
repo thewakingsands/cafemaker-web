@@ -57,6 +57,7 @@ class Recipe extends ManualHelper
         $recipe->Name_de = $recipe->ItemResult->Name_de ?? null;
         $recipe->Name_fr = $recipe->ItemResult->Name_fr ?? null;
         $recipe->Name_ja = $recipe->ItemResult->Name_ja ?? null;
+        $recipe->Name_chs = $recipe->ItemResult->Name_chs ?? null;
     }
     
     /**

@@ -59,6 +59,14 @@ class SaintCoinachRedisCustomCommand extends Command
 
         // sort class list by priority
         ksort($customClassList);
+
+        echo 'Classes to run:';
+        echo PHP_EOL;
+        foreach ($customClassList as $priority => $classes) {
+            foreach ($classes as $class) {
+                echo get_class($class) . PHP_EOL;
+            }
+        }
         
         // process each custom data
         foreach ($customClassList as $priority => $classes) {
@@ -67,6 +75,7 @@ class SaintCoinachRedisCustomCommand extends Command
                     $class->init($this->io)->handle();
                 } catch (\Exception $ex) {
                     $this->io->error("Error: {$ex->getMessage()}");
+                    echo $ex;
                 }
             }
         }

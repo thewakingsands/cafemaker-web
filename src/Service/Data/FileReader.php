@@ -41,7 +41,13 @@ class FileReader extends DataHelper
         // parse main csv file
         [$columns, $types, $data] = self::parseCsvFile($filenameList->chs);
 
-        // removed other languages
+        // append on: English, German, French and Japanese
+        foreach(['en', 'de', 'fr', 'ja'] as $language) {
+            $langFilename = $filenameList->{$language};
+            if (file_exists($langFilename)) {
+                $data = self::parseLanguageCsvFile($language, $langFilename, $data, $columns, $types);
+            }
+        }
 
         return $data;
     }
@@ -56,6 +62,7 @@ class FileReader extends DataHelper
         $filename = sprintf($filenameStructure, $filename);
 
         [$columns, $types, $data] = self::parseCsvFile($filename);
+
         return $data;
     }
 

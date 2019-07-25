@@ -68,6 +68,7 @@ class InstanceContent extends ManualHelper
     private function addContentFinderCondition($instanceContent)
     {
         // ensure the fields exist, even if no data
+        $instanceContent->Description_chs    = null;
         $instanceContent->Description_en    = null;
         $instanceContent->Description_ja    = null;
         $instanceContent->Description_de    = null;
@@ -84,10 +85,11 @@ class InstanceContent extends ManualHelper
 
         // Descriptions
         $descriptions = Redis::Cache()->get("xiv_ContentFinderConditionTransient_{$instanceContent->ContentFinderCondition->ID}");
-        $instanceContent->Description_en = $descriptions->Description_en;
-        $instanceContent->Description_ja = $descriptions->Description_ja;
-        $instanceContent->Description_de = $descriptions->Description_de;
-        $instanceContent->Description_fr = $descriptions->Description_fr;
+        $instanceContent->Description_chs = $descriptions->Description_chs ?? NULL;
+        $instanceContent->Description_en = $descriptions->Description_en ?? NULL;
+        $instanceContent->Description_ja = $descriptions->Description_ja ?? NULL;
+        $instanceContent->Description_de = $descriptions->Description_de ?? NULL;
+        $instanceContent->Description_fr = $descriptions->Description_fr ?? NULL;
         
         // Content Member Type
         $instanceContent->ContentMemberType = $instanceContent->ContentFinderCondition->ContentMemberType;
