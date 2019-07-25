@@ -17,9 +17,9 @@ class Item extends ManualHelper
         $recipeIds = $this->getContentIds('Recipe');
         $recipes   = array();
 
-        foreach ($recipeIds as $recipeId) {
-            $recipes[] = Redis::Cache()->get("xiv_Recipe_{$recipeId}");
-        }
+        // remove recipes
+
+        $this->io->progressStart(count((array)$ids));
 
         foreach ($ids as $id) {
             $key  = "xiv_Item_{$id}";
@@ -31,9 +31,17 @@ class Item extends ManualHelper
             // do stuff
             $this->processStats($item);
             $this->itemLinkItemUiCategoryToItemKind($item);
-            $this->linkRecipes($item, $recipes);
+            // $this->linkRecipes($item, $recipes);
             Redis::Cache()->set($key, $item, self::REDIS_DURATION);
+
+            if ($id % 600 == 0) {
+                $this->io->progressAdvance(600);
+            }
         }
+
+        $this->io->progressFinish();
+
+        $this->linkRecipes($recipeIds);
     }
 
     /**
@@ -88,18 +96,35 @@ class Item extends ManualHelper
         $item->ItemKind = $itemKindCsv;
     }
 
-    private function linkRecipes($item, $recipes)
+    private function linkRecipes($recipeIds)
     {
-        foreach ($recipes as $recipe) {
-            if ($recipe->ItemResult->ID == $item->ID) {
-                $item->Recipes   = $item->Recipes ?? array();
-                $item->Recipes[] = [
-                    'ID'         => $recipe->ID,
-                    'ClassJobID' => $recipe->ClassJob->ID,
-                    'Level'      => $recipe->RecipeLevelTable->ClassJobLevel
-                ];
+        $this->io->progressStart(count((array)$recipeIds));
+
+        foreach ($recipeIds as $recipeId) {
+            $recipe = Redis::Cache()->get("xiv_Recipe_{$recipeId}");
+
+            if (!$recipe->ItemResult) {
+                continue;
+            }
+
+            $itemKey = "xiv_Item_{$recipe->ItemResult->ID}";
+            $item = Redis::Cache()->get($itemKey);
+
+            $item->Recipes   = $item->Recipes ?? array();
+            $item->Recipes[] = [
+                'ID'         => $recipe->ID,
+                'ClassJobID' => $recipe->ClassJob->ID,
+                'Level'      => $recipe->RecipeLevelTable->ClassJobLevel
+            ];
+
+            Redis::Cache()->set($itemKey, $item, self::REDIS_DURATION);
+
+            if ($recipeId % 100 == 0) {
+                $this->io->progressAdvance(100);
             }
         }
+
+        $this->io->progressFinish();
     }
 
     private function processStats($item)
@@ -107,7 +132,7 @@ class Item extends ManualHelper
         foreach ($item as $key => $baseParam) {
             if (isset($baseParam) && preg_match('/^BaseParam(\d+)$/', $key, $matches, PREG_OFFSET_CAPTURE)) {
                 $valuePropName  = 'BaseParamValue' . $matches[1][0];
-                $statName       = str_replace(' ', '', $baseParam->Name_en);
+                $statName       = str_replace(' ', '', $baseParam->Name_chs);
                 $item->Stats    = $item->Stats ?? new stdClass;
                 $statsEntry     = new stdClass;
                 $statsEntry->ID = $baseParam->ID;
@@ -138,10 +163,11 @@ class Item extends ManualHelper
                 $isRelativeKey = "IsRelative${i}";
                 $maxKey        = "Max${i}";
                 $maxHQKey      = "MaxHQ${i}";
-                $statName      = str_replace(' ', '', $food->$baseParamKey->Name_en);
                 if ($food->$baseParamKey == NULL) {
                     break;
                 }
+
+                $statName      = str_replace(' ', '', $food->$baseParamKey->Name_chs);
 
                 $bonusEntry->ID       = $food->$baseParamKey->ID;
                 $bonusEntry->Relative = $food->$isRelativeKey == 1;
