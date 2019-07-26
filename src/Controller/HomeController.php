@@ -13,7 +13,7 @@ class HomeController extends AbstractController
      */
     public function home()
     {
-        return $this->render('home.html.twig');
+        return $this->redirect('https://ainou.plus/cafemaker-home', 302);
     }
     
     /**
@@ -21,7 +21,7 @@ class HomeController extends AbstractController
      */
     public function le($hash)
     {
-        return $this->json($hash);
+        return $this->json(null);
     }
 
     /**
@@ -29,7 +29,7 @@ class HomeController extends AbstractController
      */
     public function discord()
     {
-        return $this->redirect('https://discord.gg/MFFVHWC', 301);
+        return $this->redirect('https://ainou.plus/cafemaker-discord', 302);
     }
     
     /**
@@ -45,7 +45,7 @@ class HomeController extends AbstractController
      */
     public function ws()
     {
-        return $this->render('ws.html.twig');
+        // return $this->render('ws.html.twig');
     }
     
     /**
@@ -53,7 +53,7 @@ class HomeController extends AbstractController
      */
     public function battlebar()
     {
-        return $this->render('battle_bar/index.html.twig');
+        // return $this->render('battle_bar/index.html.twig');
     }
 
     /**
