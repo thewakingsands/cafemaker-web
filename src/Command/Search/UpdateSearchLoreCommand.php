@@ -125,7 +125,7 @@ class UpdateSearchLoreCommand extends Command
             'Text_de'   => $text['de'],
             'Text_fr'   => $text['fr'],
             'Text_ja'   => $text['ja'],
-            'Text_chs'   => null,
+            'Text_chs'   => $text['chs'],
             'Text_kr'   => null,
             'Context'   => $context,
             'Source'    => $source[0],
@@ -172,7 +172,7 @@ class UpdateSearchLoreCommand extends Command
             $source = [$contentName, $id];
         
             // we only care for things where the field exists and isn't empty
-            if (!isset($object->{"{$fieldName}_en"}) || empty($object->{"{$fieldName}_en"})) {
+            if (!isset($object->{"{$fieldName}_chs"}) || empty($object->{"{$fieldName}_chs"})) {
                 $missing++;
                 continue;
             }
@@ -182,11 +182,12 @@ class UpdateSearchLoreCommand extends Command
                 'de' => null,
                 'fr' => null,
                 'ja' => null,
+                'chs' => null,
             ];
             
             // build multi-language array
             foreach(Language::LANGUAGES_ACTIVE as $lang) {
-                $text[$lang] =  $object->{"{$fieldName}_{$lang}"};
+                $text[$lang] =  $object->{"{$fieldName}_{$lang}"} ?? null;
             }
 
             $data = [
@@ -207,10 +208,8 @@ class UpdateSearchLoreCommand extends Command
         }
     
         $this->io->progressFinish();
-        
-        if ($missing > ($total * 0.8)) {
-            $this->io->text("<info>Missing: {$missing}/{$total}</info>");
-        }
+
+        $this->io->text("<info>Missing: {$missing}/{$total}</info>");
     }
     
     /**
@@ -227,7 +226,7 @@ class UpdateSearchLoreCommand extends Command
             $object = Redis::Cache()->get("xiv_Quest_{$id}");
             $source = ['Quest', $id];
             
-            if (empty($object->TextData_en)) {
+            if (empty($object->TextData_chs)) {
                 continue;
             }
             
@@ -247,12 +246,13 @@ class UpdateSearchLoreCommand extends Command
             ];
             
             foreach($textDataType as $type) {
-                if (isset($object->TextData_en->{$type})) {
+                if (isset($object->TextData_chs->{$type})) {
                     $text = [
                         'en' => null,
                         'de' => null,
                         'fr' => null,
                         'ja' => null,
+                        'chs' => null,
                     ];
                     
                     foreach(Language::LANGUAGES_ACTIVE as $lang) {
@@ -290,7 +290,7 @@ class UpdateSearchLoreCommand extends Command
             
             // remove none .en files as we will handle it manually
             foreach ($files as $i => $file) {
-                if (stripos($file, '.en.') === false) {
+                if (stripos($file, '.chs.') === false) {
                     unset($files[$i]);
                 }
             }
@@ -301,7 +301,7 @@ class UpdateSearchLoreCommand extends Command
                 $fr = CsvReader::Get($folder ."/". str_ireplace('.en.', '.fr.', $file), true);
                 $ja = CsvReader::Get($folder ."/". str_ireplace('.en.', '.ja.', $file), true);
                 // kr
-                // cn
+                $chs = CsvReader::Get($folder ."/". str_ireplace('.en.', '.chs.', $file), true);
                 
                 foreach ($en as $i => $line) {
                     $source = ['Cutscene', $line[0]];
@@ -310,6 +310,7 @@ class UpdateSearchLoreCommand extends Command
                         'de' => $de[$i][1],
                         'fr' => $fr[$i][1],
                         'ja' => $ja[$i][1],
+                        'chs' => $chs[$i][1],
                     ];
                     
                     if (empty($text)) {
