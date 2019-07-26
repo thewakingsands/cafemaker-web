@@ -112,7 +112,7 @@ class UpdateSearchLoreCommand extends Command
     private function addEntry($context, $text, $source, $data)
     {
         // ignore empties
-        if (!isset($text['en']) || empty($text['en'])) {
+        if (!isset($text['chs']) || empty($text['chs'])) {
             return;
         }
         
@@ -141,11 +141,13 @@ class UpdateSearchLoreCommand extends Command
      */
     private function addBulkEntries($force = false)
     {
-        if ($force === false && count($this->entries) < (ElasticSearch::MAX_BULK_DOCUMENTS * 4)) {
+        $entriesCount = count($this->entries);
+        if ($force === false && $entriesCount < (ElasticSearch::MAX_BULK_DOCUMENTS * 4)) {
             return;
         }
-        
+
         $entries = json_decode(json_encode($this->entries), true);
+
         $this->entries = [];
         $this->elastic->bulkDocuments('lore_finder', 'search', $entries);
     }

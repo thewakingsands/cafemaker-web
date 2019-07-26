@@ -23,7 +23,7 @@ class SearchRequest
     const MIN_LIMIT = 1;
     const MAX_LIMIT = 250;
 
-    const STRING_ALGORITHM_DEFAULT = self::STRING_WILDCARD;
+    const STRING_ALGORITHM_DEFAULT = self::STRING_MATCH_PHRASE_PREFIX;
     const STRING_ALGORITHMS = [
         self::STRING_CUSTOM,
         self::STRING_WILDCARD,

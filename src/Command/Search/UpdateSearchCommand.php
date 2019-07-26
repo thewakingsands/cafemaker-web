@@ -94,7 +94,7 @@ class UpdateSearchCommand extends Command
                     $content = Redis::Cache()->get("xiv_{$contentName}_{$id}");
 
                     // if no name_en, skip it!
-                    if (empty($content->Name_en)) {
+                    if (empty($content->Name_chs)) {
                         continue;
                     }
 
@@ -178,6 +178,7 @@ class UpdateSearchCommand extends Command
                     $content["ScriptInstruction{$num}_de"],
                     $content["ScriptInstruction{$num}_fr"],
                     $content["ScriptInstruction{$num}_ja"],
+                    $content["ScriptInstruction{$num}_chs"],
                     $content["ScriptArg{$num}"],
 
                     $content["PreviousQuest0"]["Level{$num}"],
@@ -187,6 +188,7 @@ class UpdateSearchCommand extends Command
                     $content["PreviousQuest0"]["ScriptInstruction{$num}_de"],
                     $content["PreviousQuest0"]["ScriptInstruction{$num}_fr"],
                     $content["PreviousQuest0"]["ScriptInstruction{$num}_ja"],
+                    $content["PreviousQuest0"]["ScriptInstruction{$num}_chs"],
                     $content["PreviousQuest0"]["ScriptArg{$num}"]
                 );
             }
