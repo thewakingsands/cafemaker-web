@@ -15,6 +15,12 @@ location / {
     try_files $uri /index.php$is_args$args;
 }
 
+location ~* \.(?:jpg|jpeg|gif|png)$ {
+    expires 1d;
+    access_log off;
+    add_header Cache-Control "max-age=86400, public";
+}
+
 location ~ ^/index\.php(/|$) {
     fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
     fastcgi_split_path_info ^(.+\.php)(/.*)$;
