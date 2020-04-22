@@ -141,9 +141,12 @@ class Item extends ManualHelper
                     $hqStatValue = $item->$valuePropName;
                     foreach ($item as $specialKey => $baseParamSpecial) {
                         if (preg_match('/^BaseParamSpecial(\d+)$/', $specialKey, $specialMatches, PREG_OFFSET_CAPTURE)) {
-                            $hqStatBonusPropName = 'BaseParamValueSpecial' . $matches[1][0];
-                            $hqStatValue         += $item->$hqStatBonusPropName;
-                            break;
+                            $specialPropName = 'BaseParamSpecial' . $specialMatches[1][0];
+                            if(isset($item->$specialPropName) && $item->$specialPropName->ID == $statsEntry->ID) {
+                                $hqStatBonusPropName = 'BaseParamValueSpecial' . $specialMatches[1][0];
+                                $hqStatValue         += $item->$hqStatBonusPropName;
+                                break;
+                            }
                         }
                     }
                     $statsEntry->HQ = $hqStatValue;
@@ -155,7 +158,7 @@ class Item extends ManualHelper
         if (isset($item->ItemAction) && in_array($item->ItemAction->Type, $bonusActions)) {
             $food          = Redis::cache()->get("xiv_ItemFood_{$item->ItemAction->Data1}");
             $item->Bonuses = new stdClass;
-            for ($i = 0; $i < 2; $i++) {
+            for ($i = 0; $i < 3; $i++) {
                 $bonusEntry    = new stdClass;
                 $baseParamKey  = "BaseParam{$i}";
                 $valueKey      = "Value{$i}";

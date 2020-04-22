@@ -106,9 +106,9 @@ class MarketUpdater
         $api = new CompanionApi();
         
         // settings
-        CompanionSight::set('CLIENT_TIMEOUT', 5);
+        CompanionSight::set('CLIENT_TIMEOUT', 3);
         CompanionSight::set('QUERY_LOOP_COUNT', 5);
-        CompanionSight::set('QUERY_DELAY_MS', 1000);
+        CompanionSight::set('QUERY_DELAY_MS', 800);
         
         // begin
         foreach ($this->items as $item) {
@@ -358,7 +358,6 @@ class MarketUpdater
         $server = $item['server'];
     
         // grab market item document
-        $this->console(microtime(true) . " - Getting market doc");
         $marketItem = $this->getMarketItemDocument($server, $itemId);
     
         // record lodestone info
@@ -370,8 +369,6 @@ class MarketUpdater
         // set updated time
         $marketItem->Updated = time();
     
-        $this->console(microtime(true) . " - processing prices");
-
         // CURRENT PRICES
         if (isset($prices->error) === false && isset($prices->entries) && $prices->entries) {
             // append current prices
@@ -402,8 +399,6 @@ class MarketUpdater
                 return $first->PricePerUnit > $second->PricePerUnit;
             });
         }
-    
-        $this->console(microtime(true) . " - processing history");
 
         // CURRENT HISTORY
         if ($history && isset($history->error) === false && $history->history) {
@@ -447,8 +442,6 @@ class MarketUpdater
             });
         }
     
-        $this->console(microtime(true) . " - Storing...");
-        
         // save market item
         $this->market->set($marketItem);
         $this->marketItemEntryLog[$dbid] = "Set market data";
@@ -484,7 +477,7 @@ class MarketUpdater
     private function getMarketItemDocument($server, $itemId): MarketItem
     {
         // return an existing one, otherwise return a new one
-        return $this->market->get($server, $itemId, null, null, true);
+        return $this->market->get($server, $itemId, true);
     }
 
     /**
@@ -596,6 +589,9 @@ class MarketUpdater
      */
     public function updatePatreon(int $itemId, int $server)
     {
+        // grab all tokens
+        $this->fetchCompanionTokens();
+        
         /** @var CompanionItemRepository $repo */
         $repo    = $this->em->getRepository(CompanionItem::class);
         $servers = GameServers::getDataCenterServersIds(GameServers::LIST[$server]);
@@ -603,6 +599,11 @@ class MarketUpdater
         
         /** @var CompanionItem $item */
         foreach ($items as $item) {
+            // skip servers with no logged in characters
+            if (!isset($this->tokens[$item->getServer()])) {
+                continue;
+            }
+            
             // pick a random queue for each item
             $queueNumber = CompanionConfiguration::QUEUE_CONSUMERS_PATREON[array_rand(CompanionConfiguration::QUEUE_CONSUMERS_PATREON)];
 
@@ -618,6 +619,9 @@ class MarketUpdater
      */
     public function updateManual(int $itemId, int $server)
     {
+        // grab all tokens
+        $this->fetchCompanionTokens();
+        
         /** @var CompanionItemRepository $repo */
         $repo    = $this->em->getRepository(CompanionItem::class);
         $servers = GameServers::getDataCenterServersIds(GameServers::LIST[$server]);
@@ -625,6 +629,11 @@ class MarketUpdater
 
         /** @var CompanionItem $item */
         foreach ($items as $item) {
+            // skip servers with no logged in characters
+            if (!isset($this->tokens[$item->getServer()])) {
+                continue;
+            }
+            
             // pick a random queue for each item
             $queueNumber = CompanionConfiguration::QUEUE_CONSUMERS_MANUAL[array_rand(CompanionConfiguration::QUEUE_CONSUMERS_MANUAL)];
 

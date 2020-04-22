@@ -10,8 +10,8 @@ use App\Exception\ApiRateLimitException;
 use App\Exception\ContentGoneException;
 use App\Exception\InvalidCompanionMarketRequestException;
 use Lodestone\Exceptions\GenericException;
-use Lodestone\Exceptions\MaintenanceException;
-use Lodestone\Exceptions\NotFoundException;
+use Lodestone\Exceptions\LodestoneMaintenanceException;
+use Lodestone\Exceptions\LodestoneNotFoundException;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -71,21 +71,26 @@ class ExceptionListener implements EventSubscriberInterface
         $file = str_ireplace('/home/dalamud/', '', $ex->getFile());
         $message = $ex->getMessage() ?: '(no-exception-message)';
         
+        $code = $ex->getCode();
+        $code = method_exists($ex, 'getStatusCode') ? $ex->getStatusCode() : $code;
+        $code = (int)$code > 0 ? (int)$code : 500;
+        
         $json = (Object)[
             'Error'   => true,
             'Subject' => 'XIVAPI ERROR',
-            'Note'    => "Get on discord: https://discord.gg/MFFVHWC and complain to @Miu :)",
+            'Note'    => "Get on discord: https://discord.gg/MFFVHWC",
             'Message' => $message,
             'Hash'    => sha1($message),
             'Ex'      => get_class($ex),
-            'Url'     => $event->getRequest()->getUri(),
+            'ExCode'  => $code,
+            'Url'     => $event->getRequest()->getBasePath(),
             'Debug'   => (Object)[
                 'ID'      => Random::randomHumanUniqueCode() . date('ymdh'),
                 'File'    => "#{$ex->getLine()} {$file}",
                 'Method'  => $event->getRequest()->getMethod(),
                 'Path'    => $event->getRequest()->getPathInfo(),
                 'Action'  => $event->getRequest()->attributes->get('_controller'),
-                'Code'    => method_exists($ex, 'getStatusCode') ? $ex->getStatusCode() : 500,
+                'Code'    => $code,
                 'Date'    => date('Y-m-d H:i:s'),
                 'Env'     => defined(Environment::CONSTANT) ? constant(Environment::CONSTANT) : 'Prod(Assumed)',
             ],
@@ -99,10 +104,10 @@ class ExceptionListener implements EventSubscriberInterface
             UnauthorizedHttpException::class,
             NotAcceptableHttpException::class,
             NotFoundHttpException::class,
-            NotFoundException::class,
+            LodestoneNotFoundException::class,
             ContentGoneException::class,
             CompanionMarketServerException::class,
-            MaintenanceException::class,
+            LodestoneMaintenanceException::class,
             GenericException::class,
             ApiRateLimitException::class,
             ApiUnknownPrivateKeyException::class,
@@ -121,10 +126,12 @@ class ExceptionListener implements EventSubscriberInterface
         /**
          * Return a JSON error to user
          */
-        $response = new JsonResponse($json, $json->Debug->Code);
+        $response = new JsonResponse($json, $code);
         $response->headers->set('Content-Type','application/json');
         $response->headers->set('Access-Control-Allow-Origin', '*');
         $response->headers->set('Access-Control-Allow-Headers', '*');
+        $response->setStatusCode($code);
+        
         $event->setResponse($response);
     }
 }
