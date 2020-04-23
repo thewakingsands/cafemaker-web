@@ -168,6 +168,11 @@ class FileReader extends DataHelper
         foreach($stmt->process($csv)->getRecords() as $record) {
             $id = $record[0];
 
+            // wakingsands: ignore data files which does not exists in main language
+            if (!isset($data[$id])) {
+                continue;
+            }
+
             foreach($types as $offset => $type) {
                 // process all strings
                 if ($type == 'str') {
