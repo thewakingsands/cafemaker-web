@@ -68,12 +68,15 @@ class SaintCoinachRedisCustomCommand extends Command
             }
         }
         
+        $has_error = false;
+
         // process each custom data
         foreach ($customClassList as $priority => $classes) {
             foreach ($classes as $class) {
                 try {
                     $class->init($this->io)->handle();
                 } catch (\Exception $ex) {
+                    $has_error = true;
                     $this->io->error("Error: {$ex->getMessage()}");
                     echo $ex;
                 }
@@ -81,5 +84,8 @@ class SaintCoinachRedisCustomCommand extends Command
         }
         
         $this->endClock();
+        if ($has_error) {
+            die(1);
+        }
     }
 }
